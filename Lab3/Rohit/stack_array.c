@@ -71,7 +71,9 @@ int stackTop(struct Stack st)
 }
 int main()
 {
+    printf("hii");
  struct Stack st;
+ 
  create(&st);
  
  push(&st,10);
