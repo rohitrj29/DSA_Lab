@@ -1,4 +1,3 @@
 gcc -c ./stack.c
-gcc -c ./queue.c
 gcc -o stack_exe stack.o
 ./stack_exe
