@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include<stdbool.h>
+#include <stdbool.h>
 
 typedef struct stacknode *StackNode;
 struct stacknode
@@ -54,50 +54,48 @@ int top(Stack s)
     return s.top->e;
 }
 
-
 int computeSpans(char exp[], int n)
 {
     Stack s1;
-   for (int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
+    {
+
+        if (exp[i] == '*' || exp[i] == '/' || exp[i] == '-' || exp[i] == '+')
         {
-            
-            if(exp[i] == '*'|| exp[i] == '/'||exp[i] == '-'||exp[i] == '+')
+            int a = top(s1);
+            s1 = pop(s1);
+            int b = top(s1);
+            s1 = pop(s1);
+            if (exp[i] == '*')
             {
-                int a = top(s1);
-                s1=pop(s1);
-                int b = top(s1);
-                s1=pop(s1);
-                if (exp[i] == '*')
-                {
-                    a = a * b;
-                }
-                else if (exp[i] == '/')
-                {
-                    a = b / a;
-                }
-                else if (exp[i] == '+')
-                {
-                    a = b + a;
-                }
-                else if (exp[i] == '-')
-                {
-                    a = b - a;
-                }
-                s1=push(a, s1);
+                a = a * b;
             }
-            else 
-               s1= push(exp[i]-48,s1);
-            
+            else if (exp[i] == '/')
+            {
+                a = b / a;
+            }
+            else if (exp[i] == '+')
+            {
+                a = b + a;
+            }
+            else if (exp[i] == '-')
+            {
+                a = b - a;
+            }
+            s1 = push(a, s1);
         }
-        return(top(s1));
+        else
+            s1 = push(exp[i] - 48, s1);
+    }
+    return (top(s1));
 }
 
 int main()
 {
     char str[] = "1346*--42/+";
-   int sum=computeSpans(str,strlen(str));
-    printf("%d"+sum);
-    
+    int sum = computeSpans(str, strlen(str));
+    printf("%d" + sum);
+
     printf("\n");
     return 0;
 }

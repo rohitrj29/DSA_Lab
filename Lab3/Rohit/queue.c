@@ -1,67 +1,113 @@
 #include <stdio.h>
 #include <stdlib.h>
-struct Node
+#include <stdbool.h>
+typedef struct process
 {
-    int data;
-    struct Node *next;
+    int pid;
+    int arrival_time;
+    int burst_time;
+} Process;
 
-} *front = NULL, *rear = NULL;
-void enqueue(int x)
-{
-    struct Node *t;
-    t = (struct Node *)malloc(sizeof(struct Node));
-    if (t == NULL)
-        printf("Queue is FUll\n");
-    else
-    {
-        t->data = x;
-        t->next = NULL;
-        if (front == NULL)
-            front = rear = t;
-        else
-        {
-            rear->next = t;
-            rear = t;
-        }
-    }
-}
-int dequeue()
-{
-    int x = -1;
-    struct Node *t;
+typedef struct queuenode *QueueNode;
 
-    if (front == NULL)
-        printf("Queue is Empty\n");
-    else
-    {
-        x = front->data;
-        t = front;
-        front = front->next;
-        free(t);
-    }
-    return x;
-}
-void Display()
+struct queuenode
 {
-    struct Node *p = front;
-    while (p)
-    {
-        printf("%d ", p->data);
-        p = p->next;
-    }
-    printf("\n");
+    Process p;
+    QueueNode next;
+};
+
+typedef struct
+{
+    QueueNode front;
+    QueueNode rear;
+    int size;
+} Queue;
+
+Queue createQueue()
+{
+    Queue q;
+    q.front = NULL;
+    q.rear = NULL;
+    q.size = 0;
+    return q;
 }
+
+bool empty(Queue q)
+{
+    return q.front == NULL;
+}
+
+Queue enqueue(Process p, Queue q)
+{
+    QueueNode q1;
+    q1 = (QueueNode)malloc(sizeof(struct queuenode));
+    q1->p = p;
+    q1->next = NULL;
+    if (q.rear != NULL)
+        q.rear->next = q1;
+    else
+        q.front = q1;
+    q.rear = q1;
+    q.size = q.size + 1;
+    return q;
+}
+
+Queue dequeue(Queue q)
+{
+    QueueNode q1;
+    q1 = q.front;
+    q.front = q.front->next;
+    q.size = q.size - 1;
+    free(q1);
+    return q;
+}
+
+Process front(Queue q)
+{
+    return q.front->p;
+}
+
+void printQueue(Queue q)
+{
+    QueueNode q1;
+    q1 = q.front;
+    while (q1 != NULL)
+    {
+        printf("%d ", q1->p.pid);
+        q1 = q1->next;
+    }
+}
+
 int main()
 {
-    enqueue(10);
-    enqueue(20);
-    enqueue(30);
-    enqueue(40);
-    enqueue(50);
+    FILE *fp = fopen("input.txt", "r");
+    if (fp == NULL)
+    {
+        printf("File not found");
+        return 0;
+    }
+    int n;
+    fscanf(fp, "%d", &n);
+    Process p;
+    fscanf(fp, "%d %d %d", &p.pid, &p.arrival_time, &p.burst_time);
+    int time = 0;
+    Queue q = createQueue();
+    q = enqueue(p, q);
+    Process p2;
+    fscanf(fp, "%d %d %d", &p2.pid, &p2.arrival_time, &p2.burst_time);
+    int time = 0;
+    while (!empty(q) && n != 0)
+    {
+       
+        if(p2.arrival_time == time)
+        {
+            q = enqueue(p2, q);
+            n--;
+            fscanf(fp, "%d %d %d", &p2.pid, &p2.arrival_time, &p2.burst_time);
+        }
 
-    Display();
-
-    printf("%d ", dequeue());
-
-    return 0;
+        Process p3 = front(q);
+        p.burst_time--;
+        time++;
+    }
 }
