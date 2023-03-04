@@ -1,4 +1,3 @@
-// 2017A7PS0038P Rayapati Yaswanth Kumar
 #include "node.h"
 #include <stdio.h>
 #include <stdlib.h>
